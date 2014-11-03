@@ -13,6 +13,7 @@ using std::string;
 class file_t {
 public:
     static std::pair<std::vector<string>, string> split_path(const string&);
+    static bool name_is_valid(const string &);
 
     file_t();
     file_t(const string&, uint32_t, size_t);

@@ -19,6 +19,14 @@ std::pair<std::vector<string>, string> file_t::split_path(const string& path) {
     return make_pair(result, filename);
 }
 
+bool file_t::name_is_valid(const string& item) {
+    if (item.empty()) {
+        return false;
+    } else {
+        return item.size() <= MAX_NAME_LENGTH;
+    }
+}
+
 file_t::file_t() {
 }
 
@@ -45,11 +53,7 @@ size_t file_t::size() const {
 }
 
 bool file_t::is_valid() const {
-    if (name_.empty()) {
-        return false;
-    } else {
-        return name_.size() <= MAX_NAME_LENGTH;
-    }
+    return name_is_valid(name_);
 }
 
 string file_t::info(size_t block_size) const {
