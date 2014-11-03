@@ -119,13 +119,12 @@ vector<directory_t> directory_t::directories() {
 
 string directory_t::info(size_t block_size) const {
     std::ostringstream ss;
-    ss << std::setw(MAX_NAME_LENGTH + 1) << name_ << " d 0" << std::endl;
 
     for (auto& entry: files_) {
-        ss << entry.second.info(block_size);
+        ss << std::setw(MAX_NAME_LENGTH + 1) << entry.first << " f" << std::endl;
     }
     for (auto& entry: directories_) {
-        ss << std::setw(MAX_NAME_LENGTH + 1) << entry.first << " d 0" << std::endl;
+        ss << std::setw(MAX_NAME_LENGTH + 1) << entry.first << " d" << std::endl;
     }
 
     return ss.str();
