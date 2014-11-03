@@ -1,5 +1,5 @@
 #include "fs_t.h"
-#include "filebuf.h"
+#include "file_buffer.h"
 
 fs_t::fs_error::fs_error(const string& message)
         : runtime_error(message) {
@@ -77,7 +77,7 @@ void fs_t::import_(const string& from_path, const string &to_path) {
         throw fs_error("no free blocks");
     }
 
-    ofilebuf buf(this);
+    out_file_buffer buf(this);
     ostream out(&buf);
     out << in.rdbuf();
 
@@ -102,7 +102,7 @@ void fs_t::export_(const string &from_path, const string &to_path) {
         throw fs_error("no such file");
     }
 
-    ifilebuf buf(this, *file);
+    in_file_buffer buf(this, *file);
     istream in(&buf);
     out << in.rdbuf();
 }
@@ -317,10 +317,10 @@ void fs_t::copy_file(file_t* file, const string& name, directory_t* dst) {
         throw fs_error("no free blocks are available");
     }
 
-    ifilebuf in_buffer(this, *file);
+    in_file_buffer in_buffer(this, *file);
     istream in(&in_buffer);
 
-    ofilebuf out_buffer(this);
+    out_file_buffer out_buffer(this);
     ostream out(&out_buffer);
 
     out << in.rdbuf();
@@ -330,13 +330,13 @@ void fs_t::copy_file(file_t* file, const string& name, directory_t* dst) {
 }
 
 void fs_t::remove_file(file_t* file) {
-    ifilebuf in_buffer(this, *file, true);
+    in_file_buffer in_buffer(this, *file, true);
     istream in(&in_buffer);
 
     ofstream out("/dev/null");
     out << in.rdbuf();
 
-    for (uint32_t i: in_buffer.blocks) {
+    for (uint32_t i: in_buffer.blocks()) {
         bitmap_[i] = FREE;
     }
 }

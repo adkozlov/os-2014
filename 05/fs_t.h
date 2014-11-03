@@ -13,8 +13,8 @@
 
 using namespace std;
 
-class ofilebuf;
-class ifilebuf;
+class out_file_buffer;
+class in_file_buffer;
 
 class fs_t {
 public:
@@ -40,8 +40,8 @@ public:
     void mkdir(const string&);
 
 private:
-    friend class ofilebuf;
-    friend class ifilebuf;
+    friend class out_file_buffer;
+    friend class in_file_buffer;
 
     const string CONFIG_FILENAME   = "config";
 
