@@ -1,35 +1,72 @@
 #include "file_t.h"
 
-file_t::file_t(const std::string& name, size_t size, uint32_t start) : name_(name), size_(size), start_(start) {}
+std::pair<std::vector<string>, string> file_t::split_path(const string& path) {
+    if (path.compare("/") == 0) {
+        return make_pair(std::vector<string>(), "");
+    }
 
-std::string file_t::name() const {
+    string s(path);
+    replace(s.begin(), s.end(), '/', ' ');
+
+    std::istringstream ss(s);
+    std::vector<string> result(
+            (std::istream_iterator<string>(ss)),
+    std::istream_iterator<string>());
+
+    string filename = result.back();
+    result.pop_back();
+
+    return make_pair(result, filename);
+}
+
+file_t::file_t() {
+}
+
+file_t::file_t(const string& name, uint32_t start_block, size_t size)
+        : name_(name)
+        , start_block_(start_block)
+        , size_(size) {
+}
+
+string file_t::name() const {
     return name_;
 }
 
-void file_t::set_name(const std::string& name) {
+void file_t::set_name(const string& name) {
     name_ = name;
+}
+
+uint32_t file_t::start_block() const {
+    return start_block_;
 }
 
 size_t file_t::size() const {
     return size_;
 }
 
-uint32_t file_t::start() const {
-    return start_;
+bool file_t::is_valid() const {
+    if (name_.empty()) {
+        return false;
+    } else {
+        return name_.size() <= MAX_NAME_LENGTH;
+    }
 }
 
-std::istream& operator>>(std::istream& in, file_t& file) {
-    in >> file.name_;
-    in >> file.size_;
-    in >> file.start_;
+string file_t::info(size_t block_size) const {
+    std::ostringstream ss;
+    ss << std::setw(MAX_NAME_LENGTH + 1) << name_ << " f " << size_ / block_size << std::endl;
+
+    return ss.str();
+}
+
+std::istream &operator>>(std::istream& in, file_t& file) {
+    in >> file.name_ >> file.start_block_ >> file.size_;
 
     return in;
 }
 
-std::ostream& operator<<(std::ostream& out, const file_t& file) {
-    out << file.name_ << " ";
-    out << file.size_ << " ";
-    out << file.start_ << std::endl;
+std::ostream &operator<<(std::ostream &out, const file_t& file) {
+    out << file.name_ << " " << file.start_block_ << " " << file.size_ << std::endl;
 
     return out;
 }

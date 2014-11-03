@@ -3,7 +3,7 @@ CPP_FLAGS=-Wall -Werror -std=c++11
 
 BIN_DIR=bin
 
-FS=$(BIN_DIR)/file_t.o $(BIN_DIR)/fs_t.o
+FS=$(BIN_DIR)/file_t.o $(BIN_DIR)/directory_t.o $(BIN_DIR)/fs_t.o
 
 UTILS_SRC=utils
 OBJECTS=$(BIN_DIR)/init.o $(BIN_DIR)/format.o $(BIN_DIR)/import.o $(BIN_DIR)/export.o $(BIN_DIR)/ls.o $(BIN_DIR)/copy $(BIN_DIR)/move $(BIN_DIR)/rm $(BIN_DIR)/mkdir
@@ -14,6 +14,9 @@ all: $(EXECUTABLES)
 #fs
 $(BIN_DIR)/file_t.o: file_t.h file_t.cpp
 	$(CPP) $(CPP_FLAGS) -MMD -c file_t.cpp -o $(BIN_DIR)/file_t.o
+
+$(BIN_DIR)/directory_t.o: directory_t.h directory_t.cpp file_t.h
+	$(CPP) $(CPP_FLAGS) -MMD -c directory_t.cpp -o $(BIN_DIR)/directory_t.o
 
 $(BIN_DIR)/fs_t.o: fs_t.h fs_t.cpp
 	$(CPP) $(CPP_FLAGS) -MMD -c fs_t.cpp -o $(BIN_DIR)/fs_t.o
